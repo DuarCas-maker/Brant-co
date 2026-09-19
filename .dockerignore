@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.github
+.env*
+coverage
+outputs
+work
+*.log
+.sites-runtime
+.agents
+.codex
+.openai
+README.md
+docs
+tests
