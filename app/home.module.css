@@ -1,0 +1,478 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+  padding-top: var(--header-height);
+  background:
+    radial-gradient(circle at 74% 47%, rgb(162 0 0 / 8%), transparent 28%),
+    var(--color-brant-black);
+}
+
+.fineGrid,
+.largeGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fineGrid {
+  opacity: 0.58;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 2.5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 2.5%) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 40%), #000 18%, #000 78%, transparent);
+}
+
+.largeGrid {
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgb(162 0 0 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(162 0 0 / 4%) 1px, transparent 1px);
+  background-size: 256px 256px;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(100% - 3.5rem, 96rem);
+  min-height: calc(100svh - var(--header-height));
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1.16fr) minmax(31rem, 0.84fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 4.5rem);
+  padding-block: clamp(3.5rem, 7vh, 5.5rem);
+}
+
+.heroCopy {
+  position: relative;
+  z-index: 2;
+  max-width: 51rem;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyebrow::before {
+  width: 2.6rem;
+  height: 1px;
+  content: "";
+  background: var(--color-brant-red);
+}
+
+.title {
+  max-width: none;
+  font-size: clamp(3.2rem, 6.05vw, 6.25rem);
+  line-height: 0.98;
+}
+
+.titleLine {
+  display: block;
+  white-space: nowrap;
+}
+
+.title[data-locale="es"] {
+  font-size: clamp(3rem, 5.25vw, 5.5rem);
+}
+
+.body {
+  max-width: 43rem;
+}
+
+.visual {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.visual::before {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 48%;
+  width: 65%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  content: "";
+  background: rgb(162 0 0 / 5%);
+  filter: blur(70px);
+}
+
+.trustLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.15rem;
+  margin-top: clamp(2.5rem, 5vh, 4.5rem);
+  color: rgb(255 255 255 / 34%);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+}
+
+.trustLine::before {
+  width: 2.25rem;
+  height: 1px;
+  content: "";
+  background: rgb(255 255 255 / 18%);
+}
+
+.trustLine span + span::before {
+  margin-right: 1.15rem;
+  content: "/";
+  color: rgb(255 255 255 / 18%);
+}
+
+@media (max-width: 73rem) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1.08fr) minmax(27rem, 0.92fr);
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: clamp(3.2rem, 6.7vw, 5.6rem);
+  }
+}
+
+@media (max-width: 64rem) {
+  .hero {
+    min-height: auto;
+  }
+
+  .heroInner {
+    width: min(100% - 3rem, 52rem);
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-block: clamp(4.5rem, 9vw, 7rem);
+  }
+
+  .heroCopy {
+    max-width: 48rem;
+  }
+
+  .title {
+    max-width: none;
+    font-size: clamp(3.6rem, 9.4vw, 5.8rem);
+  }
+
+  .title[data-locale="es"] {
+    font-size: clamp(3.25rem, 8.6vw, 5.2rem);
+  }
+
+  .visual {
+    width: min(100%, 46rem);
+    margin-inline: auto;
+  }
+
+  .trustLine {
+    margin-top: 3rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .heroInner {
+    width: min(100% - 2.5rem, 38rem);
+    gap: 2.5rem;
+    padding-block: 3.75rem 2rem;
+  }
+
+  .title {
+    max-width: none;
+    font-size: clamp(2.85rem, 14.1vw, 4.6rem);
+  }
+
+  .title[data-locale="es"] {
+    font-size: clamp(2.65rem, 12.8vw, 4rem);
+  }
+
+  .titleLine {
+    white-space: normal;
+  }
+
+  .body {
+    margin-top: 1.4rem !important;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .trustLine {
+    display: none;
+  }
+
+  .fineGrid {
+    background-size: 48px 48px;
+  }
+}
+
+@media (max-height: 48rem) and (min-width: 64.01rem) {
+  .heroInner {
+    padding-block: 2.5rem;
+  }
+
+  .title {
+    font-size: clamp(3.4rem, 5.4vw, 5.35rem);
+  }
+
+  .trustLine {
+    margin-top: 2.5rem;
+  }
+}
+
+/* Growth system section */
+.growthSection {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 18%, rgb(162 0 0 / 7%), transparent 25rem),
+    #000;
+}
+
+.growthSectionGrid {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 2.5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 2.5%) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 70%) 70%, transparent 100%);
+}
+
+.growthSectionInner {
+  position: relative;
+  z-index: 1;
+}
+
+.growthIntro {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.86fr) minmax(13rem, 0.42fr) minmax(18rem, 0.72fr);
+  align-items: end;
+  min-height: clamp(19rem, 31vw, 27rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.growthHeading {
+  position: relative;
+  z-index: 3;
+  max-width: 10.5ch;
+  color: #fff;
+  font-size: clamp(3.7rem, 5.2vw, 5.85rem);
+  font-weight: 750;
+  line-height: 0.96;
+  letter-spacing: -0.065em;
+}
+
+.growthHeading span {
+  display: block;
+}
+
+.growthStatement {
+  position: relative;
+  z-index: 3;
+  align-self: end;
+  justify-self: center;
+  margin-bottom: 0.35rem;
+  color: rgb(255 255 255 / 78%);
+  font-size: clamp(1rem, 1.25vw, 1.25rem);
+  font-weight: 450;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.growthOrbital {
+  position: absolute;
+  top: -4rem;
+  right: -7rem;
+  width: clamp(30rem, 45vw, 47rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.growthGlow {
+  position: absolute;
+  inset: 19%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 26% 34%, rgb(255 255 255 / 16%), rgb(162 0 0 / 16%) 5%, rgb(162 0 0 / 5%) 19%, transparent 57%);
+  filter: blur(14px);
+  animation: growthGlowPulse 12s ease-in-out infinite;
+}
+
+.growthOrbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  border: 1px solid rgb(162 0 0 / 42%);
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+
+.growthOrbitOuter {
+  width: 102%;
+  height: 58%;
+  rotate: 27deg;
+  animation: growthOrbitTurn 32s linear infinite;
+}
+
+.growthOrbitMiddle {
+  width: 76%;
+  height: 96%;
+  border-color: rgb(162 0 0 / 30%);
+  border-style: dashed;
+  rotate: -32deg;
+  animation: growthOrbitTurn 40s linear infinite reverse;
+}
+
+.growthOrbitInner {
+  width: 52%;
+  height: 84%;
+  border-color: rgb(255 255 255 / 9%);
+  rotate: 8deg;
+  animation: growthOrbitTurn 26s linear infinite;
+}
+
+.growthOrbitalPoint {
+  position: absolute;
+  top: 34%;
+  left: 21%;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #a20000;
+  box-shadow: 0 0 7px rgb(162 0 0 / 75%), 0 0 24px rgb(162 0 0 / 30%);
+  animation: growthPointPulse 8s ease-in-out infinite;
+}
+
+.growthCta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: clamp(3.5rem, 6vw, 5.5rem);
+  color: rgb(255 255 255 / 88%);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: color 250ms ease;
+}
+
+.growthCta::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.7rem;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, rgb(255 255 255 / 72%), rgb(162 0 0 / 82%));
+  transform-origin: left;
+  transition: transform 350ms ease;
+}
+
+.growthCta:hover {
+  color: #fff;
+}
+
+.growthCta:hover::after {
+  transform: scaleX(0.72);
+}
+
+@keyframes growthOrbitTurn {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes growthGlowPulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes growthPointPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@media (max-width: 73rem) {
+  .growthIntro {
+    grid-template-columns: minmax(18rem, 0.95fr) minmax(13rem, 0.55fr) minmax(8rem, 0.35fr);
+  }
+
+  .growthOrbital {
+    right: -12rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .growthIntro {
+    grid-template-columns: minmax(17rem, 1fr) minmax(12rem, 0.65fr);
+    min-height: 22rem;
+  }
+
+  .growthHeading {
+    font-size: clamp(3.3rem, 7vw, 4.8rem);
+  }
+
+  .growthStatement {
+    justify-self: start;
+  }
+
+  .growthOrbital {
+    right: -16rem;
+    width: 38rem;
+    opacity: 0.72;
+  }
+}
+
+@media (max-width: 40rem) {
+  .growthSectionGrid {
+    background-size: 48px 48px;
+  }
+
+  .growthIntro {
+    grid-template-columns: 1fr;
+    align-content: end;
+    min-height: 25rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .growthHeading {
+    max-width: 9.6ch;
+    font-size: clamp(2.75rem, 13vw, 4rem);
+  }
+
+  .growthStatement {
+    justify-self: start;
+    margin-top: 2rem;
+    margin-bottom: 0;
+    white-space: normal;
+  }
+
+  .growthOrbital {
+    top: -3rem;
+    right: -17rem;
+    width: 35rem;
+    opacity: 0.5;
+  }
+
+  .growthCta {
+    margin-top: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .growthGlow,
+  .growthOrbit,
+  .growthOrbitalPoint,
+  .growthCta,
+  .growthCta::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
