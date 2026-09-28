@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Locale } from "@/lib/i18n/config";
 
 export function LanguageToggle({ locale }: { locale: Locale }) {
-  const router = useRouter();
   const [pendingLocale, setPendingLocale] = useState<Locale | null>(null);
 
   async function changeLocale(nextLocale: Locale) {
@@ -17,7 +15,9 @@ export function LanguageToggle({ locale }: { locale: Locale }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ locale: nextLocale }),
       });
-      if (response.ok) router.refresh();
+      if (response.ok) {
+        window.location.reload();
+      }
     } finally {
       setPendingLocale(null);
     }

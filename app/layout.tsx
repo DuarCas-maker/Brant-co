@@ -11,11 +11,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = getSiteConfig(await getLocale());
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: "BRANT·CO — Digital Growth Systems", template: "%s | BRANT·CO" },
+    title: { default: `BRANT·CO — ${siteConfig.tagline}`, template: "%s | BRANT·CO" },
     description: siteConfig.description,
     alternates: { canonical: "/" },
-    openGraph: { type: "website", siteName: siteConfig.name, title: "BRANT·CO — Digital Growth Systems", description: siteConfig.description, url: "/" },
-    twitter: { card: "summary", title: "BRANT·CO — Digital Growth Systems", description: siteConfig.description },
+    openGraph: { type: "website", siteName: siteConfig.name, title: `BRANT·CO — ${siteConfig.tagline}`, description: siteConfig.description, url: "/" },
+    twitter: { card: "summary", title: `BRANT·CO — ${siteConfig.tagline}`, description: siteConfig.description },
     icons: { icon: "/brand/brantco-symbol-dark.png", shortcut: "/brand/brantco-symbol-dark.png" },
   };
 }
@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   return (
-    <html lang={locale}>
+    <html data-scroll-behavior="smooth" lang={locale}>
       <body>
         <a className="skip-link" href="#main-content">
           {locale === "es" ? "Saltar al contenido" : "Skip to content"}

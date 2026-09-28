@@ -1,80 +1,82 @@
 import type { Locale } from "@/lib/i18n/config";
+import type { ServiceId } from "@/types/discovery";
 
 export type Service = {
-  id: "attract" | "convert" | "automate";
-  number: string;
-  stage: string;
+  id: Exclude<ServiceId, "special" | "unclear">;
   title: string;
-  cardTitle: string;
-  definition: string;
-  problems: string[];
-  capabilities: string[];
-  flow?: string[];
+  summary: string;
+  price: string;
+  idealFor: string;
+  outcomes: string[];
 };
 
 export const servicesByLocale: Record<Locale, Service[]> = {
   en: [
     {
-      id: "attract", number: "01", stage: "ATTRACT", title: "Growth & Content Systems", cardTitle: "Growth Systems",
-      definition: "Build a consistent content and marketing system that creates demand and strengthens positioning.",
-      problems: ["Inconsistent communication", "Improvised content", "Slow approvals", "Scattered assets", "Content disconnected from sales"],
-      capabilities: ["Brand DNA", "Audience definition", "Content pillars", "Tone of voice", "Messaging", "Content calendar", "Short-form production", "Repurposing", "Approval workflows", "Asset organization", "SOPs", "Reporting"],
+      id: "attract",
+      title: "Attract more opportunities",
+      summary: "Build a clear, consistent way to reach the right people.",
+      price: "USD 800–1,999",
+      idealFor: "For businesses that need more visibility, useful content and a steadier flow of potential customers.",
+      outcomes: ["A clearer message", "A practical content plan", "An easier way to publish and improve"],
     },
     {
-      id: "convert", number: "02", stage: "CONVERT", title: "Marketing & Sales Operations", cardTitle: "Marketing & Sales",
-      definition: "Turn incoming leads into a structured commercial process with clear stages, follow-up and visibility.",
-      problems: ["Leads fall through the cracks", "Slow response times", "Inconsistent follow-up", "No central pipeline", "Limited reporting"],
-      capabilities: ["Funnel design", "CRM architecture", "Pipelines", "Lead capture", "Lead routing", "Calendars", "Email sequences", "WhatsApp workflows", "Lead scoring", "Dashboards", "SOPs", "Onboarding"],
-      flow: ["Lead", "Capture", "Register", "Qualify", "Assign", "Follow up", "Meeting", "Proposal", "Contract", "Payment", "Onboarding"],
+      id: "convert",
+      title: "Turn more opportunities into customers",
+      summary: "Organize every conversation so fewer opportunities are forgotten.",
+      price: "USD 1,000–2,999",
+      idealFor: "For teams that need better follow-up, clearer priorities and a shared view of every opportunity.",
+      outcomes: ["Faster follow-up", "Clear next steps", "More visibility for the team"],
     },
     {
-      id: "automate", number: "03", stage: "AUTOMATE", title: "Automation & Integrations", cardTitle: "Automation & Integrations",
-      definition: "Connect your tools, eliminate repetitive work and make operations faster and more reliable.",
-      problems: ["Manual data entry", "Disconnected tools", "Forgotten follow-up", "Repeated admin tasks", "Manually assembled reports"],
-      capabilities: ["Lead automation", "Customer onboarding", "Payment workflows", "Email automation", "Operations workflows", "Reporting pipelines", "API integrations", "Webhooks", "Error handling", "Documentation"],
+      id: "automate",
+      title: "Reduce manual work",
+      summary: "Make repeated tasks happen with less effort and fewer errors.",
+      price: "USD 1,500–4,999",
+      idealFor: "For teams that copy information, send the same messages or prepare reports by hand.",
+      outcomes: ["Less repeated work", "Information in the right place", "More time for important work"],
     },
   ],
   es: [
     {
-      id: "attract", number: "01", stage: "ATRAER", title: "Sistemas de Crecimiento y Contenido", cardTitle: "Sistemas de Crecimiento",
-      definition: "Construye un sistema consistente de contenido y marketing que genere demanda y fortalezca el posicionamiento.",
-      problems: ["Comunicación inconsistente", "Contenido improvisado", "Aprobaciones lentas", "Recursos dispersos", "Contenido desconectado de ventas"],
-      capabilities: ["ADN de marca", "Definición de audiencia", "Pilares de contenido", "Tono de voz", "Mensajes", "Calendario de contenido", "Producción de formato corto", "Reutilización de contenido", "Flujos de aprobación", "Organización de recursos", "Procedimientos operativos", "Informes"],
+      id: "attract",
+      title: "Atrae más oportunidades",
+      summary: "Crea una forma clara y constante de llegar a las personas adecuadas.",
+      price: "USD 800–1.999",
+      idealFor: "Para empresas que necesitan más visibilidad, contenido útil y un flujo más constante de clientes potenciales.",
+      outcomes: ["Un mensaje más claro", "Un plan de contenido práctico", "Una forma más fácil de publicar y mejorar"],
     },
     {
-      id: "convert", number: "02", stage: "CONVERTIR", title: "Operaciones de Marketing y Ventas", cardTitle: "Marketing y Ventas",
-      definition: "Convierte los leads entrantes en un proceso comercial estructurado, con etapas claras, seguimiento y visibilidad.",
-      problems: ["Leads que se pierden", "Tiempos de respuesta lentos", "Seguimiento inconsistente", "Ausencia de un pipeline central", "Informes limitados"],
-      capabilities: ["Diseño de embudos", "Arquitectura CRM", "Pipelines", "Captura de leads", "Asignación de leads", "Calendarios", "Secuencias de email", "Flujos de WhatsApp", "Calificación de leads", "Dashboards", "Procedimientos operativos", "Onboarding"],
-      flow: ["Lead", "Captura", "Registro", "Calificación", "Asignación", "Seguimiento", "Reunión", "Propuesta", "Contrato", "Pago", "Onboarding"],
+      id: "convert",
+      title: "Convierte más oportunidades en clientes",
+      summary: "Organiza cada conversación para que menos oportunidades se queden sin seguimiento.",
+      price: "USD 1.000–2.999",
+      idealFor: "Para equipos que necesitan un mejor seguimiento, prioridades claras y una visión compartida de cada oportunidad.",
+      outcomes: ["Seguimiento más rápido", "Próximos pasos claros", "Más visibilidad para el equipo"],
     },
     {
-      id: "automate", number: "03", stage: "AUTOMATIZAR", title: "Automatización e Integraciones", cardTitle: "Automatización e Integraciones",
-      definition: "Conecta tus herramientas, elimina el trabajo repetitivo y consigue operaciones más rápidas y fiables.",
-      problems: ["Entrada manual de datos", "Herramientas desconectadas", "Seguimientos olvidados", "Tareas administrativas repetidas", "Informes montados manualmente"],
-      capabilities: ["Automatización de leads", "Onboarding de clientes", "Flujos de pago", "Automatización de email", "Flujos operativos", "Pipelines de informes", "Integraciones API", "Webhooks", "Gestión de errores", "Documentación"],
+      id: "automate",
+      title: "Reduce el trabajo manual",
+      summary: "Haz que las tareas repetitivas ocurran con menos esfuerzo y menos errores.",
+      price: "USD 1.500–4.999",
+      idealFor: "Para equipos que copian información, envían los mismos mensajes o preparan informes a mano.",
+      outcomes: ["Menos trabajo repetitivo", "Información en el lugar correcto", "Más tiempo para lo importante"],
     },
   ],
 };
 
-export const integratedServiceByLocale = {
+export const specialProjectByLocale = {
   en: {
-    title: "Growth Operating System",
-    description: "A connected operating layer across marketing, sales operations, automation and reporting.",
-    architecture: [
-      { stage: "ATTRACT", system: "Content System" },
-      { stage: "CONVERT", system: "CRM + Pipeline + Follow-up" },
-      { stage: "AUTOMATE", system: "Integrations + Workflows" },
-    ],
+    title: "Special projects",
+    description: "Need a portal, shared view or application built around the way your team works? We can assess it separately.",
+    action: "Tell us what you have in mind",
+    price: "From USD 3,000",
   },
   es: {
-    title: "Sistema Operativo de Crecimiento",
-    description: "Una capa operativa conectada que une marketing, operaciones comerciales, automatización e informes.",
-    architecture: [
-      { stage: "ATRAER", system: "Sistema de Contenido" },
-      { stage: "CONVERTIR", system: "CRM + Pipeline + Seguimiento" },
-      { stage: "AUTOMATIZAR", system: "Integraciones + Flujos" },
-    ],
+    title: "Proyectos especiales",
+    description: "¿Necesitas un portal, panel o aplicación creada alrededor de la forma en que trabaja tu equipo? Podemos evaluarlo por separado.",
+    action: "Cuéntanos qué tienes en mente",
+    price: "Desde USD 3.000",
   },
 } as const;
 
@@ -82,6 +84,6 @@ export function getServices(locale: Locale) {
   return servicesByLocale[locale];
 }
 
-export function getIntegratedService(locale: Locale) {
-  return integratedServiceByLocale[locale];
+export function getSpecialProject(locale: Locale) {
+  return specialProjectByLocale[locale];
 }

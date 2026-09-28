@@ -42,17 +42,17 @@ arguments and do not prefix them with `NEXT_PUBLIC_`:
 
 - `N8N_LEAD_WEBHOOK_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `RATE_LIMIT_SALT`
 - `OPENAI_API_KEY`
 - `OPENAI_DISCOVERY_MODEL`
-- `RATE_LIMIT_SALT`
 
 Generate `RATE_LIMIT_SALT` as a long random value. Treat the Supabase service
-role key and OpenAI key as secrets.
+role key as a secret.
 
 ## 3. Prepare Supabase
 
 1. Create or select the Supabase Cloud project.
-2. Run `supabase/migrations/0001_initial_schema.sql` in the SQL editor.
+2. Run every file in `supabase/migrations` in timestamp order in the SQL editor.
 3. Add the project URL and keys to Coolify with the scopes above.
 4. Do not expose the service role key to the browser.
 
@@ -60,10 +60,11 @@ role key and OpenAI key as secrets.
 
 1. Deploy the latest `main` commit.
 2. Confirm that `/api/health` returns HTTP 200 and `{ "status": "ok" }`.
-3. Open `/`, `/servicios`, `/portafolio`, `/forms`, and `/prs` in both languages.
+3. Open `/`, `/servicios`, `/portafolio`, `/forms`, `/diagnostico`, and `/pqrs` in both languages.
 4. Submit a test lead and confirm its n8n execution and Supabase records.
-5. Complete a five-turn discovery test and verify qualification/booking rules.
-6. Confirm canonical URLs, `robots.txt`, and `sitemap.xml` use the production
+5. Complete the five-question assessment and verify qualification/booking rules.
+6. Continue into the guided assessment and confirm it receives the form context without contact details.
+7. Confirm canonical URLs, `robots.txt`, and `sitemap.xml` use the production
    domain.
 
 ## 5. Move to another Coolify server

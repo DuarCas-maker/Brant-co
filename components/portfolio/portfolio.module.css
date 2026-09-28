@@ -1,0 +1,28 @@
+.reelViewport { overflow: hidden; }
+.reel { display: flex; width: max-content; gap: 1rem; animation: reel 42s linear infinite; }
+.reelViewport:hover .reel, .reelViewport:focus-within .reel { animation-play-state: paused; }
+.reelCard { position: relative; width: min(72vw, 28rem); aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid rgb(255 255 255 / 12%); background: #111; }
+.reelImage { object-fit: cover; transition: scale 700ms cubic-bezier(.22,1,.36,1); }
+.reelCard:hover .reelImage, .reelCard:focus-visible .reelImage { scale: 1.04; }
+.reelShade { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.4rem; background: linear-gradient(transparent 38%, rgb(0 0 0 / 88%)); }
+.gallery { display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 1rem; }
+.galleryButton { position: relative; grid-column: span 6; min-height: 28rem; overflow: hidden; border: 1px solid rgb(255 255 255 / 12%); background: #111; color: white; cursor: zoom-in; text-align: left; }
+.galleryButton:nth-child(3n) { grid-column: span 7; }
+.galleryButton:nth-child(3n + 1) { grid-column: span 5; }
+.galleryImage { object-fit: cover; transition: scale 800ms cubic-bezier(.22,1,.36,1), filter 500ms ease; }
+.galleryButton:hover .galleryImage, .galleryButton:focus-visible .galleryImage { scale: 1.035; filter: brightness(.78); }
+.galleryCopy { position: absolute; inset: auto 0 0; padding: 1.6rem; background: linear-gradient(transparent, rgb(0 0 0 / 92%)); }
+.dialog { width: min(94vw, 78rem); max-height: 92dvh; overflow: auto; border: 1px solid rgb(255 255 255 / 18%); background: #090909; color: white; box-shadow: 0 2rem 8rem rgb(0 0 0 / 75%); }
+.dialog::backdrop { background: rgb(0 0 0 / 82%); backdrop-filter: blur(12px); }
+.dialogImage { position: relative; min-height: min(58vw, 42rem); background: #111; }
+.dialogImage img { object-fit: cover; }
+.dialogClose { position: sticky; z-index: 5; top: 1rem; float: right; margin: 1rem; display: grid; width: 2.75rem; aspect-ratio: 1; place-items: center; border: 1px solid rgb(255 255 255 / 20%); border-radius: 999px; background: rgb(0 0 0 / 70%); color: white; cursor: pointer; }
+.dialogBody { clear: both; display: grid; gap: 2rem; padding: clamp(1.5rem,4vw,3.5rem); }
+@keyframes reel { to { translate: calc(-50% - .5rem) 0; } }
+@media (max-width: 48rem) {
+  .reelViewport { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .reel { animation: none; padding-inline: 1rem; }
+  .reelCard { width: 82vw; scroll-snap-align: center; }
+  .galleryButton, .galleryButton:nth-child(3n), .galleryButton:nth-child(3n + 1) { grid-column: 1 / -1; min-height: 23rem; }
+}
+@media (prefers-reduced-motion: reduce) { .reel { animation: none; } }

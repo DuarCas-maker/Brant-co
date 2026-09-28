@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { apiError, handleApiFailure } from "@/lib/api-response";
-import { createEmptyProfile } from "@/lib/openai/discovery-schema";
-import { getInitialDiscoveryQuestion } from "@/lib/openai/discovery-prompt";
 import { enforceRateLimit } from "@/lib/rate-limit";
-import { createLead, saveMessage, saveProfile } from "@/lib/supabase/leads";
+import { createLead } from "@/lib/supabase/leads";
 import { leadCaptureSchema } from "@/lib/validation/schemas";
 import { sendLeadToN8n } from "@/lib/webhooks/n8n";
 import { normalizeLocale, type Locale } from "@/lib/i18n/config";
@@ -26,11 +24,8 @@ export async function POST(request: Request) {
 
     const leadId = await createLead(parsed.data);
     await sendLeadToN8n(parsed.data, leadId);
-    const initialDiscoveryQuestion = getInitialDiscoveryQuestion(parsed.data.locale);
-    await saveProfile(createEmptyProfile(leadId));
-    await saveMessage(leadId, 1, "assistant", initialDiscoveryQuestion);
 
-    return NextResponse.json({ leadId, turn: 1, question: initialDiscoveryQuestion });
+    return NextResponse.json({ leadId });
   } catch (error) {
     return handleApiFailure(error, locale);
   }

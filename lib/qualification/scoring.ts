@@ -1,87 +1,37 @@
-import type { DiscoveryProfile } from "@/lib/openai/discovery-schema";
-import type { BudgetRange, QualificationStatus } from "@/types/discovery";
+import type { BudgetRange, DecisionStage, PriorityLevel, QualificationStatus, QuestionnaireAnswers, ServiceId } from "@/types/discovery";
 
-export type ScoreBreakdown = {
-  budget: number;
-  problemClarity: number;
-  operatingBusiness: number;
-  decisionAuthority: number;
-  volumeOpportunity: number;
-  identifiableImpact: number;
-  total: number;
-};
+export const SCORING_VERSION = "contextual_v2";
+export type ScoreBreakdown = { priority: number; decision: number; budget: number; total: number };
 
-const budgetPoints: Record<BudgetRange, number> = {
-  less_than_500: 0,
-  "500_999": 5,
-  "1000_1999": 18,
-  "2000_2999": 22,
-  "3000_4999": 25,
-  "5000_7499": 28,
-  "7500_plus": 30,
-  not_sure: 12,
-};
-
-const authorityPoints: Record<DiscoveryProfile["qualification"]["decision_authority"], number> = {
-  decision_maker: 15,
-  co_decision_maker: 12,
-  recommender: 7,
-  no_authority: 0,
-  unknown: 4,
-};
-
-function present(value: string | null) {
-  return Boolean(value?.trim());
-}
-
-export function calculateOpportunityScore(profile: DiscoveryProfile): ScoreBreakdown {
-  const budget = profile.qualification.budget_range ? budgetPoints[profile.qualification.budget_range] : 0;
-  const problemClarity = Math.min(
-    20,
-    (present(profile.discovery.primary_problem) ? 8 : 0) +
-      (present(profile.discovery.process_affected) ? 5 : 0) +
-      (present(profile.discovery.current_state) ? 4 : 0) +
-      (present(profile.discovery.future_state) ? 3 : 0),
-  );
-  const operatingBusiness = profile.company.operating === true ? 15 : profile.company.operating === false ? 0 : 4;
-  const decisionAuthority = authorityPoints[profile.qualification.decision_authority];
-  const impact = profile.discovery.impact;
-  const volumeOpportunity = Math.min(
-    10,
-    (present(impact.lead_volume) ? 5 : 0) +
-      (present(impact.transaction_volume) ? 3 : 0) +
-      (profile.discovery.manual_processes.length > 0 ? 2 : 0),
-  );
-  const impactSignals = [
-    impact.time_cost,
-    impact.financial_cost,
-    impact.errors,
-    impact.lost_opportunities,
-    impact.other,
-  ].filter(present).length;
-  const identifiableImpact = Math.min(10, impactSignals * 2);
-  const total = budget + problemClarity + operatingBusiness + decisionAuthority + volumeOpportunity + identifiableImpact;
-
-  return { budget, problemClarity, operatingBusiness, decisionAuthority, volumeOpportunity, identifiableImpact, total };
-}
-
+const priorityPoints: Record<PriorityLevel, number> = { critical: 35, this_quarter: 28, important_not_urgent: 18, exploring: 8, other: 12 };
+const decisionPoints: Record<DecisionStage, number> = { approved_30: 35, comparing: 18, needs_approval: 10, exploring: 4 };
+const budgetPoints: Record<BudgetRange, number> = { less_than_500: 0, "500_999": 5, "1000_1999": 14, "2000_2999": 19, "3000_4999": 23, "5000_plus": 30 };
 const belowMinimum = new Set<BudgetRange>(["less_than_500", "500_999"]);
 
-export function determineQualification(profile: DiscoveryProfile, score: number): QualificationStatus {
-  const budget = profile.qualification.budget_range;
-  const concreteProblem = present(profile.discovery.primary_problem) && present(profile.discovery.process_affected);
-  const reasonableFit = profile.service_fit.primary !== "Unclear / Needs Discovery";
-
-  if (budget && belowMinimum.has(budget)) return "nurture";
-  if (profile.company.operating === false) return "nurture";
-  if (profile.service_fit.special_software_project || budget === "not_sure") return "review";
-  if (!concreteProblem || !reasonableFit) return score >= 50 ? "review" : "nurture";
-  if (budget && profile.company.operating === true && score >= 70) return "qualified";
-  if (score >= 50) return "review";
-  return "nurture";
+export function calculateOpportunityScore(answers: QuestionnaireAnswers): ScoreBreakdown {
+  const priority = priorityPoints[answers.priority];
+  const decision = decisionPoints[answers.decisionStage];
+  const budget = budgetPoints[answers.budgetRange];
+  return { priority, decision, budget, total: priority + decision + budget };
+}
+export function determineQualification(answers: QuestionnaireAnswers, score: number): QualificationStatus {
+  if (belowMinimum.has(answers.budgetRange)) return "nurture";
+  if (answers.priority === "other") return "review";
+  return score >= 65 ? "qualified" : score >= 42 ? "review" : "nurture";
 }
 
-export function isBookingAllowed(profile: DiscoveryProfile, status: QualificationStatus) {
-  const budget = profile.qualification.budget_range;
-  return status === "qualified" && Boolean(budget && !belowMinimum.has(budget));
+export function getServiceRecommendation(answers: QuestionnaireAnswers): { primary: ServiceId; secondary: ServiceId[] } {
+  const mapped: ServiceId[] = [];
+  const add = (service: ServiceId) => { if (!mapped.includes(service)) mapped.push(service); };
+  if (answers.challenges.includes("more_demand")) add("attract");
+  if (answers.challenges.includes("sales_followup")) add("convert");
+  if (answers.challenges.includes("repetitive_work")) add("automate");
+  if (answers.challenges.includes("connected_business")) { add("automate"); add("convert"); }
+  if (answers.challenges.includes("custom_solution")) add("special");
+  if (answers.challenges.includes("other") && mapped.length === 0) add("unclear");
+  return { primary: mapped[0] || "unclear", secondary: mapped.slice(1, 3) };
+}
+
+export function isBookingAllowed(answers: QuestionnaireAnswers, status: QualificationStatus) {
+  return status === "qualified" && !belowMinimum.has(answers.budgetRange);
 }

@@ -1,175 +1,185 @@
 import Link from "next/link";
-import { ButtonLink } from "@/components/ui/button-link";
+import { DiscoveryExperience } from "@/components/forms/discovery-experience";
+import { PortfolioReel } from "@/components/portfolio/portfolio-reel";
 import { GrowthCore } from "@/components/sections/growth-core";
-import { SystemMap } from "@/components/sections/system-map";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getPortfolioProjects } from "@/content/portfolio";
+import { getServices, getSpecialProject } from "@/content/services";
 import { getSiteConfig } from "@/content/site";
 import { getLocale } from "@/lib/i18n/server";
 import styles from "./home.module.css";
 
 const copy = {
   en: {
-    hero: "We build the systems behind business growth.",
-    heroLines: ["We build the", "systems behind", "business", "growth."],
-    heroBody: "We connect marketing, sales operations and automation so your business can grow with less manual work.",
-    need: "Tell us what you need",
-    explore: "Explore our services",
-    growthTitle: "One connected path from attention to operation.",
-    growthTitleLines: ["One connected", "path from", "attention to", "operation."],
-    growthStatement: "Three areas. One system.",
-    allServices: "See all services",
-    breaksEyebrow: "Where growth breaks",
-    breaksTitle: "Growth breaks when your systems don't connect.",
-    breaksBody: "Friction rarely lives in one tool. It appears in the handoffs between channels, people, data and decisions.",
-    workEyebrow: "How we work",
-    workTitle: "Structured from diagnosis to optimization.",
-    selected: "Selected systems",
-    proof: "Proof needs context, not inflated claims.",
-    portfolio: "View portfolio",
-    pending: "CASE STRUCTURE / CONTENT PENDING",
-    start: "START WITH THE PROBLEM",
-    cta: "Tell us what's happening. We'll help determine what system needs to change.",
-    assessment: "Start the assessment",
+    hero: "We make growth easier to understand and manage.",
+    heroLines: ["We make growth", "easier to understand", "and manage."],
+    heroBody: "We help you attract more opportunities, follow up better and spend less time on repeated work.",
+    start: "Tell us what you need",
+    servicesAction: "See how we can help",
+    problemsEyebrow: "Common problems",
+    problemsTitle: "Does any of this feel familiar?",
+    problemsBody: "These are common challenges for growing businesses. We help solve them with better systems, not more manual work.",
+    problemsAction: "Let's talk about your situation",
+    servicesTitle: "Choose the result you need.",
+    servicesBody: "Three focused ways to solve the most common barriers to growth.",
+    idealFor: "You can achieve it when",
+    price: "Investment range",
+    exploreService: "Explore this service",
+    howTitle: "A clear path from the problem to a working solution.",
+    projectsQuestion: "Want to see what this could look like?",
+    projectsAction: "Explore the portfolio",
+    portfolioView: "View project",
+    formTitle: "Tell us what is getting in the way",
+    diagnosisTitle: "Not sure what needs to change?",
+    diagnosisBody: "First we find the real problem. Then we shape the solution and prepare a recommendation for your business.",
+    diagnosisPoints: ["Find the real problem", "Shape a practical solution", "Prepare a tailored proposal"],
+    diagnosisAction: "Start your assessment",
   },
   es: {
-    hero: "Construimos los sistemas que impulsan el crecimiento empresarial.",
-    heroLines: ["Construimos", "los sistemas", "que impulsan", "el crecimiento", "empresarial."],
-    heroBody: "Conectamos marketing, operaciones comerciales y automatización para que tu empresa crezca con menos trabajo manual.",
-    need: "Cuéntanos qué necesitas",
-    explore: "Explora nuestros servicios",
-    growthTitle: "Un recorrido conectado desde la atención hasta la operación.",
-    growthTitleLines: ["Un recorrido", "conectado", "desde la", "atención hasta", "la operación."],
-    growthStatement: "Tres áreas. Un sistema.",
-    allServices: "Ver todos los servicios",
-    breaksEyebrow: "Dónde se frena el crecimiento",
-    breaksTitle: "El crecimiento se rompe cuando tus sistemas no están conectados.",
-    breaksBody: "La fricción rara vez vive en una sola herramienta. Aparece en los traspasos entre canales, personas, datos y decisiones.",
-    workEyebrow: "Cómo trabajamos",
-    workTitle: "Estructurados desde el diagnóstico hasta la optimización.",
-    selected: "Sistemas seleccionados",
-    proof: "La evidencia necesita contexto, no promesas infladas.",
-    portfolio: "Ver portafolio",
-    pending: "ESTRUCTURA DE CASO / CONTENIDO PENDIENTE",
-    start: "EMPIEZA POR EL PROBLEMA",
-    cta: "Cuéntanos qué está pasando. Te ayudaremos a determinar qué sistema necesita cambiar.",
-    assessment: "Iniciar diagnóstico",
+    hero: "Hacemos que crecer sea más fácil de entender y gestionar.",
+    heroLines: ["Hacemos que crecer", "sea más fácil de", "entender y gestionar."],
+    heroBody: "Te ayudamos a atraer más oportunidades, darles un mejor seguimiento y dedicar menos tiempo a tareas repetitivas.",
+    start: "Cuéntanos qué necesitas",
+    servicesAction: "Mira cómo podemos ayudarte",
+    problemsEyebrow: "Problemas",
+    problemsTitle: "¿Algo de esto te resulta familiar?",
+    problemsBody: "Son desafíos comunes en empresas en crecimiento. Te ayudamos a resolverlos con mejores sistemas, no con más trabajo manual.",
+    problemsAction: "Hablemos de tu caso",
+    servicesTitle: "Elige el resultado que necesitas.",
+    servicesBody: "Tres formas concretas de resolver los obstáculos más comunes para crecer.",
+    idealFor: "Puedes lograrlo si",
+    price: "Rango de inversión",
+    exploreService: "Explorar este servicio",
+    howTitle: "Un camino claro desde el problema hasta una solución que funciona.",
+    projectsQuestion: "¿Quieres ver cómo podría verse?",
+    projectsAction: "Explorar el portafolio",
+    portfolioView: "Ver proyecto",
+    formTitle: "Cuéntanos qué está frenando el avance",
+    diagnosisTitle: "¿No tienes claro qué debe cambiar?",
+    diagnosisBody: "Primero encontramos el problema real. Después estructuramos la solución y preparamos una recomendación para tu empresa.",
+    diagnosisPoints: ["Encontramos el problema real", "Estructuramos una solución práctica", "Preparamos una propuesta personalizada"],
+    diagnosisAction: "Iniciar diagnóstico",
   },
 } as const;
 
 export default async function HomePage() {
   const locale = await getLocale();
   const text = copy[locale];
-  const siteConfig = getSiteConfig(locale);
-  const portfolioProjects = getPortfolioProjects(locale);
+  const site = getSiteConfig(locale);
+  const services = getServices(locale);
+  const specialProject = getSpecialProject(locale);
+  const projects = getPortfolioProjects(locale);
 
   return (
     <main id="main-content">
       <section className={styles.hero}>
-        <div aria-hidden="true" className={styles.fineGrid} />
-        <div aria-hidden="true" className={styles.largeGrid} />
+        <div aria-hidden="true" className={styles.grid} />
         <div className={styles.heroInner}>
           <div className={styles.heroCopy}>
-            <p className={`eyebrow ${styles.eyebrow}`}>Digital Growth Systems</p>
-            <h1 aria-label={text.hero} className={`display-title ${styles.title}`} data-locale={locale}>
-              {text.heroLines.map((line) => <span aria-hidden="true" className={styles.titleLine} key={line}>{line}</span>)}
+            <h1 aria-label={text.hero} className={styles.title}>
+              {text.heroLines.map((line) => <span aria-hidden="true" key={line}>{line}</span>)}
             </h1>
-            <p className={`body-large mt-7 ${styles.body}`}>{text.heroBody}</p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/forms">{text.need} <span aria-hidden="true">→</span></ButtonLink>
-              <ButtonLink href="/servicios" variant="secondary">{text.explore}</ButtonLink>
-            </div>
-            <div aria-hidden="true" className={styles.trustLine}>
-              <span>MARKETING</span><span>SALES</span><span>OPERATIONS</span>
+            <p className={styles.heroBody}>{text.heroBody}</p>
+            <div className={styles.actions}>
+              <ButtonLink href="#formulario">{text.start} <span aria-hidden="true">→</span></ButtonLink>
+              <ButtonLink href="#servicios" variant="secondary">{text.servicesAction}</ButtonLink>
             </div>
           </div>
-
-          <div className={styles.visual}>
-            <GrowthCore locale={locale} />
-          </div>
+          <div className={styles.visual}><GrowthCore locale={locale} /></div>
         </div>
       </section>
 
-      <section className={`section-shell ${styles.growthSection}`} id="growth-system">
-        <div aria-hidden="true" className={styles.growthSectionGrid} />
-        <div className={`container-shell ${styles.growthSectionInner}`}>
-          <div className={styles.growthIntro}>
-            <h2 aria-label={text.growthTitle} className={styles.growthHeading}>
-              {text.growthTitleLines.map((line) => <span aria-hidden="true" key={line}>{line}</span>)}
-            </h2>
-            <p className={styles.growthStatement}>{text.growthStatement}</p>
-            <div aria-hidden="true" className={styles.growthOrbital}>
-              <span className={styles.growthGlow} />
-              <span className={`${styles.growthOrbit} ${styles.growthOrbitOuter}`} />
-              <span className={`${styles.growthOrbit} ${styles.growthOrbitMiddle}`} />
-              <span className={`${styles.growthOrbit} ${styles.growthOrbitInner}`} />
-              <span className={styles.growthOrbitalPoint} />
+      <section className={styles.problems} id="problemas">
+        <div aria-hidden="true" className={styles.problemCornerOrbit}><span /><i /></div>
+        <div className={`container-shell ${styles.problemShell}`}>
+          <div className={styles.problemTop}>
+            <div className={styles.problemIntro}>
+              <span className={styles.problemEyebrow}>{text.problemsEyebrow}</span>
+              <h2>{text.problemsTitle}</h2>
+              <p>{text.problemsBody}</p>
+            </div>
+            <div aria-hidden="true" className={styles.problemVisual}>
+              <div className={styles.problemGlow} />
+              <span className={styles.problemOrbitOne} />
+              <span className={styles.problemOrbitTwo} />
+              <span className={styles.problemOrbitThree} />
+              <i className={styles.problemDotOne} />
+              <i className={styles.problemDotTwo} />
+              <i className={styles.problemDotThree} />
+              <i className={styles.problemDotFour} />
             </div>
           </div>
-          <SystemMap locale={locale} />
-          <Link className={styles.growthCta} href="/servicios">
-            {text.allServices} <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </section>
-
-      <section className="inverted section-shell">
-        <div className="container-shell">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.7fr]">
-            <div><p className="eyebrow !text-[#A20000]">{text.breaksEyebrow}</p><h2 className="section-title">{text.breaksTitle}</h2></div>
-            <p className="body-large muted-on-light lg:pt-3">{text.breaksBody}</p>
-          </div>
-          <div className="mt-14 grid border-l border-t border-black/15 sm:grid-cols-2 lg:grid-cols-3">
-            {siteConfig.problems.map((problem, index) => (
-              <article className="min-h-36 border-b border-r border-black/15 p-6 sm:p-8" key={problem}>
-                <p className="text-xs font-medium text-[#A20000]">{String(index + 1).padStart(2, "0")}</p>
-                <h3 className="mt-7 max-w-[18rem] text-lg font-semibold leading-snug tracking-[-0.025em]">{problem}</h3>
+          <div className={styles.problemGrid}>
+            {site.problems.map((problem, index) => (
+              <article key={problem}>
+                <span className={styles.problemNumber}>{String(index + 1).padStart(2, "0")}</span>
+                <div aria-hidden="true" className={styles.problemIcon} data-variant={index + 1}><span /><b /><i /></div>
+                <h3>{problem}</h3>
+                <Link aria-label={`${text.problemsAction}: ${problem}`} className={styles.problemArrow} href="#formulario"><span aria-hidden="true">→</span></Link>
               </article>
             ))}
           </div>
+          <div className={styles.problemFooter}><Link href="#formulario"><span aria-hidden="true" />{text.problemsAction}<b aria-hidden="true">→</b></Link></div>
         </div>
       </section>
 
-      <section className="section-shell bg-[#080808]">
-        <div className="container-shell">
-          <p className="eyebrow">{text.workEyebrow}</p>
-          <h2 className="section-title">{text.workTitle}</h2>
-          <ol className="mt-14 grid border-t border-white/12 lg:grid-cols-5">
-            {siteConfig.process.map((step, index) => (
-              <li className="border-b border-white/12 py-7 first:lg:pl-0 last:lg:border-r-0 lg:border-b-0 lg:border-r lg:px-6" key={step.name}>
-                <p className="text-xs font-medium text-[#D85C5C]">0{index + 1}</p>
-                <h3 className="mt-6 text-lg font-semibold">{step.name}</h3>
-                <p className="mt-3 text-sm leading-7 text-white/55">{step.description}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="section-shell border-y border-white/10 bg-black">
-        <div className="container-shell">
-          <div className="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="eyebrow">{text.selected}</p><h2 className="section-title">{text.proof}</h2></div>
-            <ButtonLink href="/portafolio" variant="secondary">{text.portfolio}</ButtonLink>
+      <section className={styles.services} id="servicios">
+        <div aria-hidden="true" className={styles.serviceBackdrop}><span /><b /><i /><div className={styles.servicePlanetOne} /><div className={styles.servicePlanetTwo} /></div>
+        <div className={`container-shell ${styles.serviceShell}`}>
+          <div className={styles.sectionIntro}>
+            <h2>{text.servicesTitle}</h2>
+            <p>{text.servicesBody}</p>
           </div>
-          <div className="mt-12 grid gap-4 lg:grid-cols-3">
-            {portfolioProjects.map((project) => (
-              <article className="group flex min-h-80 flex-col justify-between border border-white/10 bg-[#121212] p-7 transition-colors hover:border-white/20 hover:bg-[#1C1C1C]" key={project.slug}>
-                <div>
-                  <div className="flex flex-wrap gap-2 text-xs font-medium tracking-[0.1em] text-[#D85C5C]">{project.category.map((category) => <span key={category}>{category.toUpperCase()}</span>)}</div>
-                  <h3 className="mt-8 text-2xl font-semibold tracking-[-0.035em]">{project.title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/55">{project.shortDescription}</p>
-                </div>
-                <p className="mt-10 text-xs font-medium text-white/40">{text.pending}</p>
+          <div className={styles.serviceGrid}>
+            {services.map((service, index) => (
+              <article className={styles.serviceCard} key={service.id}>
+                <div className={styles.cardTop}><span className={styles.cardNumber}>0{index + 1}</span><span className={styles.price}><small>{text.price}</small>{service.price}</span></div>
+                <div aria-hidden="true" className={styles.serviceOrbit} data-variant={index + 1}><span /><b /><i /></div>
+                <div><h3>{service.title}</h3><p>{service.summary}</p></div>
+                <div className={styles.fit}><strong>{text.idealFor}</strong><p>{service.idealFor}</p></div>
+                <ul>{service.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul>
+                <Link href={`/servicios#${service.id}`}>{text.exploreService} <span aria-hidden="true">→</span></Link>
               </article>
             ))}
           </div>
+          <aside className={styles.special}>
+            <div><span className={styles.specialPrice}>{text.price}: {specialProject.price}</span><h3>{specialProject.title}</h3><p>{specialProject.description}</p></div>
+            <ButtonLink href="/forms?interest=special" variant="secondary">{specialProject.action} <span aria-hidden="true">→</span></ButtonLink>
+          </aside>
         </div>
       </section>
 
-      <section className="section-shell bg-[#A20000]">
-        <div className="container-shell grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div><p className="mb-5 text-xs font-medium tracking-[0.18em] text-white/70">{text.start}</p><h2 className="section-title max-w-[22ch]">{text.cta}</h2></div>
-          <ButtonLink href="/forms">{text.assessment} <span aria-hidden="true">→</span></ButtonLink>
+      <section className={styles.process} id="proceso">
+        <div aria-hidden="true" className={styles.processBackdrop}><span /><b /><i /></div>
+        <div className={`container-shell ${styles.processShell}`}>
+          <h2>{text.howTitle}</h2>
+          <ol>{site.process.map((step, index) => <li key={step.name}><span>0{index + 1}</span><div><h3>{step.name}</h3><p>{step.description}</p></div></li>)}</ol>
+        </div>
+      </section>
+
+      <section className={styles.portfolioPreview}>
+        <div className="container-shell">
+          <div className={styles.portfolioHeader}>
+            <h3>{text.projectsQuestion}</h3>
+            <ButtonLink href="/portafolio" variant="secondary">{text.projectsAction} <span aria-hidden="true">→</span></ButtonLink>
+          </div>
+        </div>
+        <PortfolioReel projects={projects} viewLabel={text.portfolioView} />
+      </section>
+
+      <section className={styles.formSection} id="formulario">
+        <div aria-hidden="true" className={styles.formBackdrop}><span /><b /><i /><div className={styles.formOrbitOne} /><div className={styles.formOrbitTwo} /></div>
+        <div className={`container-shell ${styles.formContent}`}>
+          <div className={styles.formIntro}><h2>{text.formTitle}</h2></div>
+          <DiscoveryExperience embedded locale={locale} />
+        </div>
+      </section>
+
+      <section className={styles.diagnosis} id="diagnostico">
+        <div className="container-shell">
+          <div><h2>{text.diagnosisTitle}</h2><p>{text.diagnosisBody}</p></div>
+          <ul>{text.diagnosisPoints.map((point) => <li key={point}><span aria-hidden="true">✓</span>{point}</li>)}</ul>
+          <ButtonLink href="/diagnostico">{text.diagnosisAction} <span aria-hidden="true">→</span></ButtonLink>
         </div>
       </section>
     </main>

@@ -1,83 +1,66 @@
 import type { Locale } from "@/lib/i18n/config";
 
-const shared = {
-  name: "BRANT·CO",
-  descriptor: "Digital Growth Systems",
-} as const;
+const shared = { name: "BRANT·CO" } as const;
 
 export const siteConfigByLocale = {
   en: {
     ...shared,
-    tagline: "We build the systems behind business growth.",
-    description:
-      "BRANT·CO builds connected systems across marketing, sales operations and automation to help service businesses grow with less manual work.",
+    tagline: "Clearer growth. Simpler work.",
+    description: "BRANT·CO helps businesses attract more opportunities, improve follow-up and reduce repeated work.",
     navigation: [
       { label: "Home", href: "/" },
       { label: "Services", href: "/servicios" },
       { label: "Portfolio", href: "/portafolio" },
       { label: "Forms", href: "/forms" },
-      { label: "PRS", href: "/prs" },
+      { label: "Assessment", href: "/diagnostico" },
+      { label: "PQRS", href: "/pqrs" },
     ],
     process: [
-      { name: "Audit", description: "Understand the current system, bottlenecks and business impact." },
-      { name: "Design", description: "Map the future state and define the right architecture." },
-      { name: "Build", description: "Implement the workflows, systems and integrations." },
-      { name: "Launch", description: "Test, deploy and train the team." },
-      { name: "Optimize", description: "Measure, improve and expand the system over time." },
+      { name: "Listen", description: "We understand what is happening and what it is costing you." },
+      { name: "Find the cause", description: "We separate the visible symptoms from the real problem." },
+      { name: "Plan", description: "We define a practical solution and the order of work." },
+      { name: "Build", description: "We create, connect and test the agreed solution." },
+      { name: "Improve", description: "We review what works and make it better over time." },
     ],
     problems: [
-      "Leads lost between channels",
-      "Manual follow-up",
-      "Scattered tools",
-      "Inconsistent content",
-      "Repetitive admin work",
-      "No pipeline visibility",
-      "Founders acting as the system",
-      "Reports built manually",
-      "Missed opportunities",
+      "Potential customers are lost because follow-up arrives late.",
+      "Important information lives in too many places.",
+      "Your team repeats tasks that could happen automatically.",
+      "It is hard to know which opportunity needs attention.",
+      "Content depends on last-minute effort.",
+      "Reports take too long to prepare.",
     ],
   },
   es: {
     ...shared,
-    tagline: "Construimos los sistemas que impulsan el crecimiento empresarial.",
-    description:
-      "BRANT·CO construye sistemas conectados de marketing, operaciones comerciales y automatización para ayudar a empresas de servicios a crecer con menos trabajo manual.",
+    tagline: "Crecimiento más claro. Trabajo más simple.",
+    description: "BRANT·CO ayuda a las empresas a atraer más oportunidades, mejorar el seguimiento y reducir el trabajo repetitivo.",
     navigation: [
       { label: "Inicio", href: "/" },
       { label: "Servicios", href: "/servicios" },
       { label: "Portafolio", href: "/portafolio" },
-      { label: "Formularios", href: "/forms" },
-      { label: "PRS", href: "/prs" },
+      { label: "Formulario", href: "/forms" },
+      { label: "Diagnóstico", href: "/diagnostico" },
+      { label: "PQRS", href: "/pqrs" },
     ],
     process: [
-      { name: "Auditoría", description: "Entendemos el sistema actual, sus cuellos de botella y el impacto en el negocio." },
-      { name: "Diseño", description: "Trazamos el estado futuro y definimos la arquitectura adecuada." },
-      { name: "Construcción", description: "Implementamos los flujos, sistemas e integraciones." },
-      { name: "Lanzamiento", description: "Probamos, desplegamos y formamos al equipo." },
-      { name: "Optimización", description: "Medimos, mejoramos y ampliamos el sistema con el tiempo." },
+      { name: "Escuchamos", description: "Entendemos qué está pasando y cuánto te está costando." },
+      { name: "Encontramos la causa", description: "Separamos los síntomas visibles del problema real." },
+      { name: "Trazamos el plan", description: "Definimos una solución práctica y el orden del trabajo." },
+      { name: "Construimos", description: "Creamos, conectamos y probamos la solución acordada." },
+      { name: "Mejoramos", description: "Revisamos qué funciona y lo hacemos mejor con el tiempo." },
     ],
     problems: [
-      "Leads perdidos entre canales",
-      "Seguimiento manual",
-      "Herramientas dispersas",
-      "Contenido inconsistente",
-      "Trabajo administrativo repetitivo",
-      "Falta de visibilidad del pipeline",
-      "Fundadores que actúan como el sistema",
-      "Informes creados manualmente",
-      "Oportunidades perdidas",
+      "Pierdes clientes potenciales porque el seguimiento llega tarde.",
+      "La información importante está repartida en demasiados lugares.",
+      "Tu equipo repite tareas que podrían ocurrir automáticamente.",
+      "Es difícil saber qué oportunidad necesita atención.",
+      "El contenido depende del esfuerzo de último momento.",
+      "Preparar informes toma demasiado tiempo.",
     ],
   },
 } as const;
 
-export function getSiteConfig(locale: Locale) {
-  return siteConfigByLocale[locale];
-}
-
-export function getPublicContactEmail() {
-  return process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || null;
-}
-
-export function getBookingUrl() {
-  return process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || null;
-}
+export function getSiteConfig(locale: Locale) { return siteConfigByLocale[locale]; }
+export function getPublicContactEmail() { return process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || null; }
+export function getBookingUrl() { return process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || null; }

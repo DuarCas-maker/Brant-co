@@ -1,39 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import styles from "./growth-core.module.css";
 
-type StageId = "attract" | "convert" | "automate";
-
-const copy = {
-  en: {
-    label: "BRANT Growth Core: attract, convert and automate working as one connected system",
-    connected: "Connected",
-    stages: {
-      attract: { number: "01", title: "ATTRACT", area: "MARKETING", details: ["CONTENT", "DEMAND", "POSITIONING"] },
-      convert: { number: "02", title: "CONVERT", area: "SALES", details: ["CRM", "PIPELINE", "FOLLOW-UP"] },
-      automate: { number: "03", title: "AUTOMATE", area: "OPS", details: ["WORKFLOWS", "INTEGRATIONS", "DATA"] },
-    },
-  },
-  es: {
-    label: "Núcleo de crecimiento BRANT: atraer, convertir y automatizar como un único sistema conectado",
-    connected: "Conectado",
-    stages: {
-      attract: { number: "01", title: "ATRAER", area: "MARKETING", details: ["CONTENIDO", "DEMANDA", "POSICIONAMIENTO"] },
-      convert: { number: "02", title: "CONVERTIR", area: "VENTAS", details: ["CRM", "PIPELINE", "SEGUIMIENTO"] },
-      automate: { number: "03", title: "AUTOMATIZAR", area: "OPS", details: ["FLUJOS", "INTEGRACIONES", "DATOS"] },
-    },
-  },
+const labels = {
+  en: "An abstract animation showing a business growing around one clear center",
+  es: "Una animación abstracta que muestra un negocio creciendo alrededor de un centro claro",
 } as const;
 
-const stages: StageId[] = ["attract", "convert", "automate"];
+const stageLabels = {
+  en: { attract: "Attract", convert: "Convert", automate: "Automate" },
+  es: { attract: "Atraer", convert: "Convertir", automate: "Automatizar" },
+} as const;
 
 export function GrowthCore({ locale }: { locale: Locale }) {
-  const text = copy[locale];
   const rootRef = useRef<HTMLDivElement>(null);
-  const [activeStage, setActiveStage] = useState<StageId | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -44,177 +27,69 @@ export function GrowthCore({ locale }: { locale: Locale }) {
     if (!precisePointer.matches || reducedMotion.matches) return;
 
     let frame = 0;
-    const updateParallax = (event: PointerEvent) => {
+    const move = (event: PointerEvent) => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
         const bounds = root.getBoundingClientRect();
         const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
         const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-        root.style.setProperty("--background-x", `${x * 2}px`);
-        root.style.setProperty("--background-y", `${y * 2}px`);
-        root.style.setProperty("--orbits-x", `${x * 4}px`);
-        root.style.setProperty("--orbits-y", `${y * 4}px`);
-        root.style.setProperty("--core-x", `${x * 5.5}px`);
-        root.style.setProperty("--core-y", `${y * 5.5}px`);
-        root.style.setProperty("--nodes-x", `${x * 8}px`);
-        root.style.setProperty("--nodes-y", `${y * 8}px`);
+        root.style.setProperty("--orbit-x", `${x * 5}px`);
+        root.style.setProperty("--orbit-y", `${y * 5}px`);
+        root.style.setProperty("--core-x", `${x * 9}px`);
+        root.style.setProperty("--core-y", `${y * 9}px`);
       });
     };
 
-    const resetParallax = () => {
+    const reset = () => {
       window.cancelAnimationFrame(frame);
-      root.style.setProperty("--background-x", "0px");
-      root.style.setProperty("--background-y", "0px");
-      root.style.setProperty("--orbits-x", "0px");
-      root.style.setProperty("--orbits-y", "0px");
+      root.style.setProperty("--orbit-x", "0px");
+      root.style.setProperty("--orbit-y", "0px");
       root.style.setProperty("--core-x", "0px");
       root.style.setProperty("--core-y", "0px");
-      root.style.setProperty("--nodes-x", "0px");
-      root.style.setProperty("--nodes-y", "0px");
     };
 
-    root.addEventListener("pointermove", updateParallax);
-    root.addEventListener("pointerleave", resetParallax);
+    root.addEventListener("pointermove", move);
+    root.addEventListener("pointerleave", reset);
     return () => {
       window.cancelAnimationFrame(frame);
-      root.removeEventListener("pointermove", updateParallax);
-      root.removeEventListener("pointerleave", resetParallax);
+      root.removeEventListener("pointermove", move);
+      root.removeEventListener("pointerleave", reset);
     };
   }, []);
 
   return (
-    <div
-      aria-label={text.label}
-      className={styles.root}
-      data-active={activeStage ?? "none"}
-      ref={rootRef}
-      role="group"
-    >
-      <div aria-hidden="true" className={styles.backgroundLayer}>
-        <span className={`${styles.crosshair} ${styles.crosshairOne}`} />
-        <span className={`${styles.crosshair} ${styles.crosshairTwo}`} />
-        <span className={styles.axisLine} />
+    <div aria-label={labels[locale]} className={styles.root} ref={rootRef} role="group">
+      <div aria-hidden="true" className={styles.glow} />
+      <svg aria-hidden="true" className={styles.orbits} viewBox="0 0 680 620">
+        <defs>
+          <filter id="soft-red-glow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <ellipse className={`${styles.orbit} ${styles.orbitOne}`} cx="340" cy="310" rx="276" ry="116" />
+        <ellipse className={`${styles.orbit} ${styles.orbitTwo}`} cx="340" cy="310" rx="252" ry="154" />
+        <ellipse className={`${styles.orbit} ${styles.orbitThree}`} cx="340" cy="310" rx="196" ry="250" />
+        <ellipse className={styles.traceOne} cx="340" cy="310" pathLength="100" rx="276" ry="116" />
+        <ellipse className={styles.traceTwo} cx="340" cy="310" pathLength="100" rx="252" ry="154" />
+        <g className={styles.nodes}>
+          <circle className={styles.nodeRing} cx="121" cy="239" r="22" />
+          <circle className={styles.node} cx="121" cy="239" r="6" />
+          <circle className={styles.nodeRing} cx="567" cy="382" r="22" />
+          <circle className={styles.node} cx="567" cy="382" r="6" />
+          <circle className={styles.nodeRing} cx="403" cy="546" r="22" />
+          <circle className={styles.node} cx="403" cy="546" r="6" />
+        </g>
+      </svg>
+      <div className={styles.hotspotLayer}>
+        <button aria-label={stageLabels[locale].attract} className={`${styles.hotspot} ${styles.hotspotAttract}`} type="button"><span className={styles.hotspotLabel}>{stageLabels[locale].attract}</span></button>
+        <button aria-label={stageLabels[locale].convert} className={`${styles.hotspot} ${styles.hotspotConvert}`} type="button"><span className={styles.hotspotLabel}>{stageLabels[locale].convert}</span></button>
+        <button aria-label={stageLabels[locale].automate} className={`${styles.hotspot} ${styles.hotspotAutomate}`} type="button"><span className={styles.hotspotLabel}>{stageLabels[locale].automate}</span></button>
       </div>
-
-      <div aria-hidden="true" className={styles.orbitLayer}>
-        <svg className={styles.orbitSvg} viewBox="0 0 720 620">
-          <defs>
-            <filter id="growth-core-node-glow" x="-200%" y="-200%" width="500%" height="500%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          <ellipse className={styles.outerArc} cx="360" cy="315" rx="455" ry="330" transform="rotate(-12 360 315)" />
-          <ellipse className={styles.outerArcSecondary} cx="350" cy="315" rx="365" ry="270" transform="rotate(18 350 315)" />
-
-          <g className={`${styles.orbitGroup} ${styles.orbitFar}`}>
-            <ellipse className={styles.orbitFaint} cx="355" cy="315" rx="245" ry="225" transform="rotate(28 355 315)" />
-          </g>
-
-          <g className={`${styles.orbitGroup} ${styles.orbitAttract}`}>
-            <ellipse className={styles.orbitPrimary} cx="355" cy="315" rx="286" ry="116" transform="rotate(12 355 315)" />
-            <ellipse className={styles.flowDot} cx="355" cy="315" pathLength="100" rx="286" ry="116" transform="rotate(12 355 315)" />
-          </g>
-
-          <g className={`${styles.orbitGroup} ${styles.orbitConvert}`}>
-            <ellipse className={styles.orbitSecondary} cx="355" cy="315" rx="278" ry="139" transform="rotate(37 355 315)" />
-            <ellipse className={styles.flowDotSlow} cx="355" cy="315" pathLength="100" rx="278" ry="139" transform="rotate(37 355 315)" />
-          </g>
-
-          <g className={`${styles.orbitGroup} ${styles.orbitAutomate}`}>
-            <ellipse className={styles.orbitDashed} cx="355" cy="315" rx="250" ry="168" transform="rotate(-15 355 315)" />
-            <ellipse className={styles.flowDotReverse} cx="355" cy="315" pathLength="100" rx="250" ry="168" transform="rotate(-15 355 315)" />
-          </g>
-
-          <g className={`${styles.orbitGroup} ${styles.orbitVertical}`}>
-            <ellipse className={styles.orbitWhite} cx="355" cy="315" rx="192" ry="247" transform="rotate(69 355 315)" />
-          </g>
-
-          <g className={styles.connectors}>
-            <path className={`${styles.connector} ${styles.connectorAttract}`} d="M 324 145 L 385 145 L 430 88 L 456 88" />
-            <path className={`${styles.connector} ${styles.connectorConvert}`} d="M 576 349 L 628 349 L 650 327" />
-            <path className={`${styles.connector} ${styles.connectorAutomate}`} d="M 184 414 L 184 472 L 244 472" />
-          </g>
-
-          <g className={`${styles.nodeGlyph} ${styles.nodeAttract}`} transform="translate(324 145)">
-            <circle className={styles.nodeOuterRing} r="24" />
-            <circle className={styles.nodeInnerRing} r="15" />
-            <circle className={styles.nodeLight} r="6" />
-          </g>
-          <g className={`${styles.nodeGlyph} ${styles.nodeConvert}`} transform="translate(576 349)">
-            <circle className={styles.nodeOuterRing} r="24" />
-            <circle className={styles.nodeInnerRing} r="15" />
-            <circle className={styles.nodeLight} r="6" />
-          </g>
-          <g className={`${styles.nodeGlyph} ${styles.nodeAutomate}`} transform="translate(184 414)">
-            <circle className={styles.nodeOuterRing} r="24" />
-            <circle className={styles.nodeInnerRing} r="15" />
-            <circle className={styles.nodeLight} r="6" />
-          </g>
-
-          <circle className={styles.dataPoint} cx="461" cy="450" r="4" />
-          <circle className={styles.dataPointMuted} cx="276" cy="198" r="2" />
-        </svg>
-      </div>
-
-      <div aria-hidden="true" className={styles.coreLayer}>
-        <div className={styles.coreHalo} />
-        <div className={styles.core}>
-          <span className={styles.coreSheen} />
-          <Image
-            alt=""
-            className={styles.coreSymbol}
-            height={512}
-            priority
-            src="/brand/brantco-symbol-dark.png"
-            width={512}
-          />
-        </div>
-        <span className={styles.coreCaption}>BRANT GROWTH CORE</span>
-      </div>
-
-      <div className={styles.nodeLayer}>
-        <div aria-hidden="true" className={styles.systemId}>SYSTEM / 001</div>
-        <div aria-hidden="true" className={styles.telemetry}>
-          <span className={styles.status}><i /> {text.connected}</span>
-          <span>PEOPLE</span>
-          <span>PROCESS</span>
-          <span>TECHNOLOGY</span>
-          <span>GROWTH</span>
-        </div>
-
-        {stages.map((stage) => {
-          const stageText = text.stages[stage];
-          return (
-            <button
-              aria-label={`${stageText.title}: ${stageText.details.join(", ")}`}
-              aria-pressed={activeStage === stage}
-              className={`${styles.stage} ${styles[`stage${stage[0].toUpperCase()}${stage.slice(1)}`]}`}
-              key={stage}
-              onBlur={() => setActiveStage(null)}
-              onClick={() => setActiveStage((current) => current === stage ? null : stage)}
-              onFocus={() => setActiveStage(stage)}
-              onPointerEnter={() => setActiveStage(stage)}
-              onPointerLeave={() => setActiveStage(null)}
-              type="button"
-            >
-              <span className={styles.stageHeader}>
-                <span className={styles.stageNumber}>{stageText.number}</span>
-                <span className={styles.stageTitle}>{stageText.title}</span>
-              </span>
-              <span className={styles.stageArea}>{stageText.area}</span>
-              <span className={styles.stageDetails}>{stageText.details.join("  /  ")}</span>
-            </button>
-          );
-        })}
-
-        <div aria-hidden="true" className={styles.microFooter}>
-          <span><i /> A MORE EFFICIENT TOMORROW</span>
-        </div>
+      <div aria-hidden="true" className={styles.coreWrap}>
+        <span className={styles.core}>
+          <Image alt="" className={styles.symbol} height={512} priority src="/brand/brantco-symbol-dark.png" width={512} />
+        </span>
       </div>
     </div>
   );
